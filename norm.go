@@ -97,6 +97,9 @@ func (n *Norm) BatchR(rv autofunc.RVector, in autofunc.RResult, m int) autofunc.
 // including not only the weights and magnitudes, but also
 // the parameters of a generated network (not including
 // the temporary normalized variables).
+//
+// The parameters are ordered as follows: n.Weights,
+// n.Mags, network.Parameters().
 func (n *Norm) Parameters() []*autofunc.Variable {
 	res := make([]*autofunc.Variable, len(n.Weights)+len(n.Mags))
 	copy(res, n.Weights)
