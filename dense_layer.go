@@ -17,7 +17,7 @@ func init() {
 // NewDenseLayer creates a weight-normalized
 // fully-connected layer based on a neuralnet.DenseLayer.
 //
-// The resulting *Norm is initialized to immitate d, only
+// The resulting *Norm is initialized to imitate d, only
 // with its weight matrix decomposed into separate
 // magnitude and direction vectors.
 func NewDenseLayer(d *neuralnet.DenseLayer) *Norm {
