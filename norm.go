@@ -144,30 +144,21 @@ func (n *Norm) normalize() []autofunc.Result {
 	var res []autofunc.Result
 	for i, weights := range n.Weights {
 		mags := n.Mags[i]
-		splitMags := autofunc.Split(len(mags.Vector), mags)
-		subVecs := autofunc.Split(len(mags.Vector), weights)
-		for j, x := range subVecs {
-			norm := autofunc.Pow(autofunc.SquaredNorm{}.Apply(x), 0.5)
-			normalized := autofunc.ScaleFirst(x, autofunc.Inverse(norm))
-			subVecs[j] = autofunc.ScaleFirst(normalized, splitMags[j])
-		}
-		res = append(res, autofunc.Concat(subVecs...))
+		norms := rowNorms(weights, len(mags.Vector))
+		scales := autofunc.Mul(mags, autofunc.Inverse(norms))
+		res = append(res, scaleRows(weights, scales))
 	}
 	return res
 }
 
 func (n *Norm) normalizeR(rv autofunc.RVector) []autofunc.RResult {
 	var res []autofunc.RResult
-	for i, weights := range n.Weights {
+	for i, weightsVar := range n.Weights {
+		weights := autofunc.NewRVariable(weightsVar, rv)
 		mags := autofunc.NewRVariable(n.Mags[i], rv)
-		splitMags := autofunc.SplitR(len(mags.Output()), mags)
-		subVecs := autofunc.SplitR(len(mags.Output()), autofunc.NewRVariable(weights, rv))
-		for j, x := range subVecs {
-			norm := autofunc.PowR(autofunc.SquaredNorm{}.ApplyR(rv, x), 0.5)
-			normalized := autofunc.ScaleFirstR(x, autofunc.InverseR(norm))
-			subVecs[j] = autofunc.ScaleFirstR(normalized, splitMags[j])
-		}
-		res = append(res, autofunc.ConcatR(subVecs...))
+		norms := rowNormsR(weights, len(mags.Output()))
+		scales := autofunc.MulR(mags, autofunc.InverseR(norms))
+		res = append(res, scaleRowsR(weights, scales))
 	}
 	return res
 }
