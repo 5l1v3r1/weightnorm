@@ -19,25 +19,3 @@ func rowNormsR(matrix autofunc.RResult, numRows int) autofunc.RResult {
 	}
 	return autofunc.ConcatR(res...)
 }
-
-func scaleRows(matrix autofunc.Result, scales autofunc.Result) autofunc.Result {
-	return autofunc.Pool(scales, func(scales autofunc.Result) autofunc.Result {
-		var res []autofunc.Result
-		mags := autofunc.Split(len(scales.Output()), scales)
-		for i, x := range autofunc.Split(len(mags), matrix) {
-			res = append(res, autofunc.ScaleFirst(x, mags[i]))
-		}
-		return autofunc.Concat(res...)
-	})
-}
-
-func scaleRowsR(matrix autofunc.RResult, scales autofunc.RResult) autofunc.RResult {
-	return autofunc.PoolR(scales, func(scales autofunc.RResult) autofunc.RResult {
-		var res []autofunc.RResult
-		mags := autofunc.SplitR(len(scales.Output()), scales)
-		for i, x := range autofunc.SplitR(len(mags), matrix) {
-			res = append(res, autofunc.ScaleFirstR(x, mags[i]))
-		}
-		return autofunc.ConcatR(res...)
-	})
-}

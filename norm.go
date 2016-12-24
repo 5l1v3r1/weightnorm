@@ -146,7 +146,7 @@ func (n *Norm) normalize() []autofunc.Result {
 		mags := n.Mags[i]
 		norms := rowNorms(weights, len(mags.Vector))
 		scales := autofunc.Mul(mags, autofunc.Inverse(norms))
-		res = append(res, scaleRows(weights, scales))
+		res = append(res, autofunc.ScaleRows(weights, scales))
 	}
 	return res
 }
@@ -158,7 +158,7 @@ func (n *Norm) normalizeR(rv autofunc.RVector) []autofunc.RResult {
 		mags := autofunc.NewRVariable(n.Mags[i], rv)
 		norms := rowNormsR(weights, len(mags.Output()))
 		scales := autofunc.MulR(mags, autofunc.InverseR(norms))
-		res = append(res, scaleRowsR(weights, scales))
+		res = append(res, autofunc.ScaleRowsR(weights, scales))
 	}
 	return res
 }
